@@ -37,10 +37,11 @@ public class VendingMachine {
     public void displayItems(){
         int i = 1;
         for(Slot slot: this.slots){
-            System.out.println(i + " " + slot.getItem().getName());
-            System.out.println("Price: " + slot.getItem().getPrice());
+            System.out.println(i + ". " + slot.getItem().getName());
+            System.out.println("Price: \u20B1" + slot.getItem().getPrice());
             System.out.println("Calories: " + slot.getItem().getCal());
             System.out.println("Stocks: " + slot.getQuantity());
+            System.out.println();
             i++;
         }
     }
@@ -56,8 +57,10 @@ public class VendingMachine {
         int[] lessStock = new int[last_opt-1]; //To be added back to the quantity of items if ever the user decided to withdraw purchase
 
         do{
+            Main.clear_terminal();
             this.displayItems();
             System.out.println(last_opt + ". Proceed to Payment");
+            System.out.println();
             System.out.print("Enter choice: ");
             input = scanner.nextLine();
 
@@ -70,8 +73,9 @@ public class VendingMachine {
 
             if (choice < 1 || choice > last_opt){
                 System.out.println("Invalid Input");
+                Main.pause(scanner);
             }
-            else{
+            else if(choice < last_opt){
                 if(this.slots.get(choice-1).getQuantity() == 0){
                     System.out.println("No stocks left for this item!");
                 }
@@ -82,6 +86,7 @@ public class VendingMachine {
                     this.slots.get(choice-1).setQuantity(this.slots.get(choice-1).getQuantity()-1);
                     lessStock[choice-1]++;
                     outsamt += item.getPrice();
+                    Main.pause(scanner);
                 }
             }
         }while(choice != last_opt);
@@ -90,12 +95,15 @@ public class VendingMachine {
         double payment = 0;
         double change = 0;
         double total_amt = outsamt; //snapshot
-        System.out.println("Outstanding Amount: ₱" + outsamt);
+        System.out.println("Outstanding Amount: \u20B1" + outsamt);
         int[] denominations = this.cashInventory.getDenominations();
         boolean has_withdrawn = false;
         while (outsamt > 0){
+            j = 1;
+            Main.clear_terminal();
+            System.out.println("Outstanding Amount: \u20B1" + outsamt);
             for (int denomination: denominations){
-                System.out.println(j + ". " + "₱" + denomination);
+                System.out.println(j + ". " + "\u20B1" + denomination);
                 j++;
             }
             System.out.println(j + " .Withdraw Purchase");
@@ -109,8 +117,9 @@ public class VendingMachine {
                 choice = 0;
             }
 
-            if(choice < 1 || choice > j + 1){
+            if(choice < 1 || choice > j){
                 System.out.println("Invalid Input");
+                Main.pause(scanner);
             }
             else if(choice == j){ //user withdraws from purchase
                 for(int k = 0; k < this.slots.size(); k++){
@@ -128,27 +137,29 @@ public class VendingMachine {
         }
 
         if (has_withdrawn){
-            if(this.cashInventory.enoughChange(change)){
-                System.out.println("Purchase successfuly withdrawn");
-            }
+            this.cashInventory.dispenseChange(change);
+            System.out.println("Purchase successfuly withdrawn");
         }
-        else{
+        else{ //user didn't cancel purchase
             change = -1 * outsamt;
             if(this.cashInventory.enoughChange(change)){
                 this.transactionHistory.updateSales(total_amt);
                 for(Item item: cart){
                     this.transactionHistory.updateQuantitySold(item);
                 }
+                this.cashInventory.dispenseChange(change);
                 System.out.println("Thank you for buying!");
             }
-            else{
+            else{ //No reserves to supply change
+                change = payment;
                 for(int k = 0; k < this.slots.size(); k++){ //adds back the subtracted slots' quantity if the purchase doesn't push through
                     this.slots.get(k).setQuantity(this.slots.get(k).getQuantity() + lessStock[k]);
                 }
-                System.out.println("Purchase cancelled due to insufficient reserves to supply your change");
+                System.out.println("Purchase cancelled due to insufficient cash reserves to produce your change");
+                this.cashInventory.enoughChange(change);
             }
         }
-        System.out.println("Change: ₱" + change);
+        Main.pause(scanner);
     }
 
     public void restockItems(Scanner scanner){
@@ -156,6 +167,7 @@ public class VendingMachine {
         String input = "";
         int choice = 0;
         do{
+            Main.clear_terminal();
             this.displayItems();
             System.out.println(last_opt + ". Finish");
             System.out.print("Choice: ");
@@ -170,11 +182,17 @@ public class VendingMachine {
 
             if(choice < 1 || choice > last_opt){
                 System.out.println("Invalid Input!");
+                Main.pause(scanner);
             }
-            else{
+            else if(choice < last_opt){
                 int additional = -1;
                 String input1 = "";
+                String itemName = this.slots.get(choice-1).getItem().getName();
+                int curr_quantity = this.slots.get(choice-1).getQuantity();
                 do{
+                    Main.clear_terminal();
+                    System.out.println(itemName + " " + curr_quantity);
+                    System.out.println();
                     System.out.print("How many stocks you want to add for this item?: ");
                     input1 = scanner.nextLine();
                     try{
@@ -186,9 +204,9 @@ public class VendingMachine {
 
                     if(additional < 0){
                         System.out.println("Invalid Input!");
+                        Main.pause(scanner);
                     }
                     else{
-                        int curr_quantity = this.slots.get(choice-1).getQuantity();
                         this.slots.get(choice-1).setQuantity(curr_quantity + additional);
 
                         System.out.println("Successfuly restocked this item!");
@@ -197,6 +215,7 @@ public class VendingMachine {
             }
         }while(choice != last_opt);
         this.transactionHistory.resetSalesSumarry(this.slots);
+        Main.pause(scanner);
     }
 
     public void setPrices(Scanner scanner){
@@ -204,6 +223,7 @@ public class VendingMachine {
         String input = "";
         int choice = 0;
         do{
+            Main.clear_terminal();
             this.displayItems();
             System.out.println(last_opt + ". Finish");
             System.out.print("Choice: ");
@@ -218,12 +238,18 @@ public class VendingMachine {
 
             if(choice < 1 || choice > last_opt){
                 System.out.println("Invalid Input!");
+                Main.pause(scanner);
             }
-            else{
+            else if(choice < last_opt){
                 double newPrice = -1;
                 String input1 = "";
+                String itemName = this.slots.get(choice-1).getItem().getName();
+                double curr_price = this.slots.get(choice-1).getItem().getPrice();
                 do{
-                    System.out.println("Enter new price for this item: ");
+                    Main.clear_terminal();
+                    System.out.println(itemName + " \u20B1" + curr_price);
+                    System.out.println();
+                    System.out.print("Enter new price for this item: ");
                     input1 = scanner.nextLine();
                     try{
                         newPrice = Double.parseDouble(input1);
@@ -234,6 +260,7 @@ public class VendingMachine {
 
                     if(newPrice < 0){
                         System.out.println("Invalid Input!");
+                        Main.pause(scanner);
                     }
                     else{
                         this.slots.get(choice-1).getItem().setPrice(newPrice);
@@ -242,6 +269,7 @@ public class VendingMachine {
                 }while(newPrice < 0);
             }
         }while(choice != last_opt);
+        Main.pause(scanner);
     }
 
     public void replenishCash(Scanner scanner){
@@ -250,6 +278,7 @@ public class VendingMachine {
         String input = "";
         int choice = 0;
         do{
+            Main.clear_terminal();
             this.cashInventory.displayDenominations();
             System.out.println(last_opt + ". Finish");
             System.out.print("Choice: ");
@@ -264,15 +293,21 @@ public class VendingMachine {
 
             if(choice < 1 || choice > last_opt){
                 System.out.println("Invalid Input!");
+                Main.pause(scanner);
             }
-            else{
+            else if(choice < last_opt){
                 int additional = -1;
                 String input1 = "";
+                double denomination = denominations[choice-1];
+                int curr_qty = this.cashInventory.getReserves()[choice-1];
                 do{
-                    System.out.print("How many ₱" + denominations[choice-1] + "s bills you want to add?: ");
+                    Main.clear_terminal();
+                    System.out.println("\u20B1" + denomination + " " + curr_qty);
+                    System.out.println();
+                    System.out.print("How many \u20B1" + denomination + "s bill you want to add?: ");
                     input1 = scanner.nextLine();
                     try{
-                        additional = Integer.parseInt(input);
+                        additional = Integer.parseInt(input1);
                     }
                     catch (NumberFormatException e){
                         additional = -1;
@@ -280,26 +315,28 @@ public class VendingMachine {
 
                     if(additional < 0){
                         System.out.println("Invalid Input!");
+                        Main.pause(scanner);
                     }
                     else{
                         int curr_quantity = this.cashInventory.getReserves()[choice-1];
                         this.cashInventory.setReserves(curr_quantity+additional, choice-1);
                         System.out.println("Successfuly replenished this denomination!");
+                        Main.pause(scanner);
                     }
                 }while(additional < 0);
             }
         }while(choice != last_opt);
+        Main.pause(scanner);
     }
 
     public void displayTransactionSummary(){
         System.out.println("======= Sales Summary (Starting from the latest restock) =======");
-        System.out.println("Gross Sales: ₱" + this.transactionHistory.getSales());
-
+        System.out.println("Gross Sales: \u20B1" + this.transactionHistory.getSales());
     }
 
     public void collectCash(){
         double extrct_amt = this.cashInventory.extractCash();
         System.out.println("Cash Collected Successfuly!");
-        System.out.println("Garnered Amount: ₱" + extrct_amt);
+        System.out.println("Garnered Amount: \u20B1" + extrct_amt);
     }
 }
