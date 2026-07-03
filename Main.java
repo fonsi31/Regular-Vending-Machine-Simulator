@@ -142,9 +142,7 @@ public class Main {
                     vendingMachine.replenishCash(scanner);
                     break;
                 case 4:
-                    clear_terminal();
-                    vendingMachine.displayTransactionSummary();
-                    pause(scanner);
+                    vendingMachine.displayTransactionSummary(scanner);
                     break;
                 case 5:
                     clear_terminal();

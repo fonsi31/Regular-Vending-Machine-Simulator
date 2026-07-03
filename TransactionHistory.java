@@ -30,7 +30,7 @@ public class TransactionHistory {
         this.quantitySold.put(item, this.getQuantitySold(item) + 1);
     }
 
-    public void resetSalesSumarry(ArrayList<Slot> slots){ //happens every restocking
+    public void resetSummary(ArrayList<Slot> slots){ //happens every restocking
         for(Item item: this.quantitySold.keySet()){
             this.quantitySold.put(item, 0);
         }
@@ -42,7 +42,31 @@ public class TransactionHistory {
         }
     }
 
-    public void displaySummary(){
-        
+    public void displaySalesSummary(){
+        System.out.println("======= Sales Summary (Starting from the latest restock) =======");
+        System.out.println("Gross Sales: \u20B1" + this.sales);
+        System.out.println();
+        System.out.printf("%-20s %-15s%n", "Product", "Sales Volume");
+        System.out.println("-".repeat(36));
+        for(Item item: this.quantitySold.keySet()){
+            System.out.printf("%-20s %-15d%n", item.getName(), this.quantitySold.get(item));
+        }
+    }
+
+    public void displayInventory(ArrayList<Slot> slots){
+        System.out.println("======= Inventory Summary (Starting from the latest restock) =======");
+        System.out.println("Starting Inventory");
+        System.out.println("----------------------------------------");
+        System.out.printf("%-20s %-15s%n", "Product", "Stocks");
+        for(Item item: this.startingInventory.keySet()){
+            System.out.printf("%-20s %-15d%n", item.getName(), this.startingInventory.get(item));
+        }
+        System.out.println();
+        System.out.println("Current Inventory");
+        System.out.println("----------------------------------------");
+        System.out.printf("%-20s %-15s%n", "Product", "Stocks");
+        for(Slot slot: slots){
+            System.out.printf("%-20s %-15d%n", slot.getItem().getName(), slot.getQuantity());
+        }
     }
 }

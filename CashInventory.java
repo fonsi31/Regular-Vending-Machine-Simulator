@@ -75,8 +75,9 @@ public class CashInventory {
     }
 
     public void displayDenominations(){
+        System.out.printf("%-3s %-15s %-10s%n", "ID", "Denomination", "Quantity");
         for(int i = 0; i < this.denominations.length; i++){
-            System.out.println((i+1) + ". \u20B1" + this.denominations[i] + "  " + this.reserves[i]);
+            System.out.printf("%-3d %s%-14d %-10d%n", i+1, "\u20B1", this.denominations[i], this.reserves[i]);
         }
     }
 

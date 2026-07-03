@@ -36,12 +36,10 @@ public class VendingMachine {
 
     public void displayItems(){
         int i = 1;
+        System.out.printf("%-3s %-30s %-15s %-15s %-20s%n", "ID", "Product", "Price", "kcal", "Available Stocks");
         for(Slot slot: this.slots){
-            System.out.println(i + ". " + slot.getItem().getName());
-            System.out.println("Price: \u20B1" + slot.getItem().getPrice());
-            System.out.println("Calories: " + slot.getItem().getCal());
-            System.out.println("Stocks: " + slot.getQuantity());
-            System.out.println();
+            System.out.printf("%-3d %-30s %s%-14.2f %-15d %-20d%n", i,
+             slot.getItem().getName(), "\u20B1", slot.getItem().getPrice(), slot.getItem().getCal(), slot.getQuantity());
             i++;
         }
     }
@@ -214,7 +212,7 @@ public class VendingMachine {
                 }while(additional < 0);
             }
         }while(choice != last_opt);
-        this.transactionHistory.resetSalesSumarry(this.slots);
+        this.transactionHistory.resetSummary(this.slots);
         Main.pause(scanner);
     }
 
@@ -280,6 +278,7 @@ public class VendingMachine {
         do{
             Main.clear_terminal();
             this.cashInventory.displayDenominations();
+            System.out.println();
             System.out.println(last_opt + ". Finish");
             System.out.print("Choice: ");
             input = scanner.nextLine();
@@ -329,9 +328,40 @@ public class VendingMachine {
         Main.pause(scanner);
     }
 
-    public void displayTransactionSummary(){
-        System.out.println("======= Sales Summary (Starting from the latest restock) =======");
-        System.out.println("Gross Sales: \u20B1" + this.transactionHistory.getSales());
+    public void displayTransactionSummary(Scanner scanner){
+        String input = "";
+        int choice = 0;
+
+        do{
+            Main.clear_terminal();
+            System.out.println("1. View Sales Summary");
+            System.out.println("2. View Inventory");
+            System.out.println("3. Back");
+            System.out.print("Choice: ");
+            input = scanner.nextLine();
+
+            try{
+                choice = Integer.parseInt(input);
+            }
+            catch(NumberFormatException e){
+                choice = 0;
+            }
+
+            if(choice < 1 || choice > 3){
+                System.out.println("invalid Input!");
+            }
+            else if(choice == 1){
+                Main.clear_terminal();
+                this.transactionHistory.displaySalesSummary();
+                Main.pause(scanner);
+            }
+            else if(choice == 2){
+                Main.clear_terminal();
+                this.transactionHistory.displayInventory(this.slots);
+                Main.pause(scanner);
+            }
+        } while(choice != 3);
+
     }
 
     public void collectCash(){
