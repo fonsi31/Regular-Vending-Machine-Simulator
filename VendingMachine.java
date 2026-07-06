@@ -50,11 +50,11 @@ public class VendingMachine {
         String input = "";
         int choice = 0;
 
-        ArrayList<Item> cart = new ArrayList<Item>();
+        HashMap<Item, Integer> cart = new HashMap<>();
         double outsamt = 0; //outstanding amount
         int[] lessStock = new int[last_opt-1]; //To be added back to the quantity of items if ever the user decided to withdraw purchase
 
-        do{
+        do{ //The user chooses items to purchase
             Main.clear_terminal();
             this.displayItems();
             System.out.println(last_opt + ". Proceed to Payment");
@@ -79,7 +79,7 @@ public class VendingMachine {
                 }
                 else{
                     Item item = this.slots.get(choice-1).getItem();
-                    cart.add(item);
+                    cart.put(item, cart.getOrDefault(item, 0) + 1);
                     System.out.println("Item added to cart!");
                     this.slots.get(choice-1).setQuantity(this.slots.get(choice-1).getQuantity()-1);
                     lessStock[choice-1]++;
@@ -93,13 +93,18 @@ public class VendingMachine {
         double payment = 0;
         double change = 0;
         double total_amt = outsamt; //snapshot
-        System.out.println("Outstanding Amount: \u20B1" + outsamt);
         int[] denominations = this.cashInventory.getDenominations();
         boolean has_withdrawn = false;
         while (outsamt > 0){
             j = 1;
             Main.clear_terminal();
-            System.out.println("Outstanding Amount: \u20B1" + outsamt);
+            System.out.println("Your Cart:");
+            for(Item item: cart.keySet()){
+                System.out.printf("%-20s x%-3d%n", item.getName(), cart.get(item));
+            }
+            System.out.println();
+            System.out.println("Outstanding Amount: \u20B1" + outsamt); 
+            System.out.println();
             for (int denomination: denominations){
                 System.out.println(j + ". " + "\u20B1" + denomination);
                 j++;
@@ -142,8 +147,8 @@ public class VendingMachine {
             change = -1 * outsamt;
             if(this.cashInventory.enoughChange(change)){
                 this.transactionHistory.updateSales(total_amt);
-                for(Item item: cart){
-                    this.transactionHistory.updateQuantitySold(item);
+                for(Item item: cart.keySet()){
+                    this.transactionHistory.updateQuantitySold(item, cart.get(item));
                 }
                 this.cashInventory.dispenseChange(change);
                 System.out.println("Thank you for buying!");
@@ -154,7 +159,7 @@ public class VendingMachine {
                     this.slots.get(k).setQuantity(this.slots.get(k).getQuantity() + lessStock[k]);
                 }
                 System.out.println("Purchase cancelled due to insufficient cash reserves to produce your change");
-                this.cashInventory.enoughChange(change);
+                this.cashInventory.dispenseChange(change);
             }
         }
         Main.pause(scanner);

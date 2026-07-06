@@ -26,8 +26,8 @@ public class TransactionHistory {
         return this.quantitySold.get(item);
     }
 
-    public void updateQuantitySold(Item item){
-        this.quantitySold.put(item, this.getQuantitySold(item) + 1);
+    public void updateQuantitySold(Item item, int additional){
+        this.quantitySold.put(item, this.getQuantitySold(item) + additional);
     }
 
     public void resetSummary(ArrayList<Slot> slots){ //happens every restocking
