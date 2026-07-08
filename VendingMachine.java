@@ -9,7 +9,7 @@ public class VendingMachine {
     private TransactionHistory transactionHistory;
 
     public VendingMachine(int maxQuantity){
-        this.slots = new ArrayList<Slot>();
+        this.slots = new ArrayList< >();
         
         this.slots.add(new Slot(new Item("Flour Tortilla", 30, 210), 10, maxQuantity));
         this.slots.add(new Slot(new Item("Wheat Tortilla", 35, 190), 10, maxQuantity));
@@ -147,8 +147,19 @@ public class VendingMachine {
             change = -1 * outsamt;
             if(this.cashInventory.enoughChange(change)){
                 this.transactionHistory.updateSales(total_amt);
+                System.out.println();
+                System.out.println("Dispensing your items...Please wait");
                 for(Item item: cart.keySet()){
                     this.transactionHistory.updateQuantitySold(item, cart.get(item));
+                    try{
+                        Thread.sleep(1500);
+                    }
+                    catch(InterruptedException e){
+                        e.printStackTrace();
+                    }
+                    for(int i = 0; i < cart.get(item); i++){
+                        System.out.println(item.getName());
+                    }
                 }
                 this.cashInventory.dispenseChange(change);
                 System.out.println("Thank you for buying!");

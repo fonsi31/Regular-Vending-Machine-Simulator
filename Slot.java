@@ -22,6 +22,10 @@ public class Slot {
         return this.quantity;
     }
 
+    public int getMaxQuantity(){
+        return this.maxQuantity;
+    }
+
     public void setQuantity(int newQuantity){
         if(newQuantity + this.quantity > this.maxQuantity || newQuantity > this.maxQuantity){
             this.quantity = this.maxQuantity;
