@@ -162,6 +162,7 @@ public class VendingMachine {
                     }
                 }
                 this.cashInventory.dispenseChange(change);
+                System.out.println();
                 System.out.println("Thank you for buying!");
             }
             else{ //No reserves to supply change
@@ -210,7 +211,7 @@ public class VendingMachine {
                     System.out.print("How many stocks you want to add for this item?: ");
                     input1 = scanner.nextLine();
                     try{
-                        additional = Integer.parseInt(input);
+                        additional = Integer.parseInt(input1);
                     }
                     catch (NumberFormatException e){
                         additional = -1;
@@ -221,7 +222,7 @@ public class VendingMachine {
                         Main.pause(scanner);
                     }
                     else{
-                        this.slots.get(choice-1).setQuantity(curr_quantity + additional);
+                        this.slots.get(choice-1).setQuantity(additional + curr_quantity);
 
                         System.out.println("Successfuly restocked this item!");
                     }
