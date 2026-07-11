@@ -87,18 +87,15 @@ public class TransactionHistory {
      * @param slots the list of vending machine slots
      */
     public void resetSummary(ArrayList<Slot> slots){
-        for(Item item : this.quantitySold.keySet()){
+        for (Item item : this.quantitySold.keySet()){
             this.quantitySold.put(item, 0);
         }
 
         this.sales = 0;
 
-        int i = 0;
-
-        for(Item item : this.startingInventory.keySet()){
-            this.startingInventory.put(item,
-                    slots.get(i).getQuantity());
-            i++;
+        for (Slot slot : slots){
+            Item item = slot.getItem();
+            this.startingInventory.put(item, slot.getQuantity());
         }
     }
 
@@ -107,8 +104,10 @@ public class TransactionHistory {
      * <p>
      * The summary includes the gross sales and the quantity sold
      * for every item.
+     * 
+     * @param slots the list of vending machine slots
      */
-    public void displaySalesSummary(){
+    public void displaySalesSummary(ArrayList<Slot> slots){
         System.out.println("======= Sales Summary (Starting from the latest restock) =======");
         System.out.println("Gross Sales: ₱" + this.sales);
         System.out.println();
@@ -118,7 +117,9 @@ public class TransactionHistory {
 
         System.out.println("-".repeat(36));
 
-        for(Item item : this.quantitySold.keySet()){
+        for (Slot slot : slots) {
+            Item item = slot.getItem();
+
             System.out.printf("%-20s %-15d%n",
                     item.getName(),
                     this.quantitySold.get(item));
@@ -142,7 +143,9 @@ public class TransactionHistory {
         System.out.printf("%-20s %-15s%n",
                 "Product", "Stocks");
 
-        for(Item item : this.startingInventory.keySet()){
+        for (Slot slot : slots) {
+            Item item = slot.getItem();
+
             System.out.printf("%-20s %-15d%n",
                     item.getName(),
                     this.startingInventory.get(item));
@@ -156,7 +159,7 @@ public class TransactionHistory {
         System.out.printf("%-20s %-15s%n",
                 "Product", "Stocks");
 
-        for(Slot slot : slots){
+        for (Slot slot : slots) {
             System.out.printf("%-20s %-15d%n",
                     slot.getItem().getName(),
                     slot.getQuantity());

@@ -428,7 +428,7 @@ public class VendingMachine {
             }
             else if(choice == 1){
                 Main.clear_terminal();
-                this.transactionHistory.displaySalesSummary();
+                this.transactionHistory.displaySalesSummary(this.slots);
                 Main.pause(scanner);
             }
             else if(choice == 2){
