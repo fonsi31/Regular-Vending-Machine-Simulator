@@ -1,7 +1,26 @@
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
+/**
+ * Entry point of the Vending Machine Simulator.
+ * <p>
+ * This class displays the different menus of the program and
+ * delegates vending and maintenance operations to the
+ * {@link VendingMachine} class.
+ *
+ * @author Alfonso S. Cauilan, Daviane Nate M. Abad
+ * @version 1.0
+ */
 public class Main {
+
+    /**
+     * Starts the Vending Machine Simulator.
+     * <p>
+     * Displays the main menu and allows the user to test the
+     * vending machine or exit the program.
+     *
+     * @param args command-line arguments (not used)
+     */
     public static void main(String[] args){
         String input = "";
         int choice = 0;
@@ -33,16 +52,36 @@ public class Main {
         } while(choice != 2);
     }
 
+    /**
+     * Clears the console screen.
+     * <p>
+     * This method uses ANSI escape sequences to clear the terminal
+     * before displaying a new menu.
+     */
     static void clear_terminal(){
         System.out.print("\033[H\033[2J");
         System.out.flush();
     }
 
+    /**
+     * Pauses the program until the user presses the Enter key.
+     *
+     * @param scanner the Scanner object used to receive user input
+     */
     static void pause(Scanner scanner){
         System.out.print("Press 'Enter' to continue...");
         scanner.nextLine();
     }
 
+    /**
+     * Displays the Test Vending Machine menu.
+     * <p>
+     * Allows the user to choose between vending features,
+     * maintenance features, or returning to the main menu.
+     *
+     * @param vendingMachine the vending machine being tested
+     * @param scanner the Scanner object used to receive user input
+     */
     static void testMachine(VendingMachine vendingMachine, Scanner scanner){
         String input = "";
         int choice = 0;
@@ -75,6 +114,15 @@ public class Main {
         }while(choice != 3);
     }
 
+    /**
+     * Displays the vending features menu.
+     * <p>
+     * Users may view available items or purchase products from
+     * the vending machine.
+     *
+     * @param vendingMachine the vending machine being used
+     * @param scanner the Scanner object used to receive user input
+     */
     static void vending(VendingMachine vendingMachine, Scanner scanner){
         String input = "";
         int choice = 0;
@@ -109,6 +157,16 @@ public class Main {
         }while(choice != 3);
     }
 
+    /**
+     * Displays the maintenance features menu.
+     * <p>
+     * Allows the operator to restock items, modify prices,
+     * replenish cash reserves, collect money, and view
+     * transaction summaries.
+     *
+     * @param vendingMachine the vending machine being maintained
+     * @param scanner the Scanner object used to receive user input
+     */
     static void maintenance(VendingMachine vendingMachine, Scanner scanner){
         String input = "";
         int choice = 0;

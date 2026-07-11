@@ -3,11 +3,28 @@ import java.util.HashMap;
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
+/**
+ * Simulates a regular vending machine.
+ * <p>
+ * This class manages item slots, customer purchases,
+ * maintenance operations, cash reserves, and transaction history.
+ *
+ * @author Alfonso S. Cauilan, Daviane Nate M. Abad
+ * @version 1.0
+ */
 public class VendingMachine {
     private ArrayList<Slot> slots;
     private CashInventory cashInventory;
     private TransactionHistory transactionHistory;
 
+    /**
+     * Constructs a vending machine with a specified slot capacity.
+     * <p>
+     * The machine is initialized with predefined items,
+     * an empty cash inventory, and a transaction history.
+     *
+     * @param maxQuantity the maximum number of items each slot can hold
+     */
     public VendingMachine(int maxQuantity){
         this.slots = new ArrayList< >();
         
@@ -34,6 +51,12 @@ public class VendingMachine {
         this.transactionHistory = new TransactionHistory(quantitySold, startingInventory);
     }
 
+    /**
+     * Displays all available items in the vending machine.
+     * <p>
+     * Each item's ID, name, price, calorie count,
+     * and remaining stock are shown.
+     */
     public void displayItems(){
         int i = 1;
         System.out.printf("%-3s %-30s %-15s %-15s %-20s%n", "ID", "Product", "Price", "kcal", "Available Stocks");
@@ -44,6 +67,15 @@ public class VendingMachine {
         }
     }
 
+    /**
+     * Allows a customer to purchase one or more items.
+     * <p>
+     * The customer selects items, inserts payment,
+     * receives change when applicable, and the
+     * transaction history is updated.
+     *
+     * @param scanner the Scanner object used to receive user input
+     */
     public void purchaseItem(Scanner scanner){
         int last_opt = this.slots.size() + 1;
 
@@ -177,6 +209,15 @@ public class VendingMachine {
         Main.pause(scanner);
     }
 
+    /**
+     * Restocks items in the vending machine.
+     * <p>
+     * The operator selects an item and specifies the quantity
+     * to be added. The transaction summary is reset after
+     * restocking is completed.
+     *
+     * @param scanner the Scanner object used to receive user input
+     */
     public void restockItems(Scanner scanner){
         int last_opt = this.slots.size() + 1;
         String input = "";
@@ -233,6 +274,13 @@ public class VendingMachine {
         Main.pause(scanner);
     }
 
+    /**
+     * Updates the prices of items in the vending machine.
+     * <p>
+     * The operator selects an item and specifies a new price.
+     * non-negative prices are enforced
+     * @param scanner the Scanner object used to receive user input
+     */
     public void setPrices(Scanner scanner){
         int last_opt = this.slots.size() + 1;
         String input = "";
@@ -286,7 +334,12 @@ public class VendingMachine {
         }while(choice != last_opt);
         Main.pause(scanner);
     }
-
+    /**
+     * Replenishes the cash reserves of the vending machine.
+     * <p>
+     * The operator selects a denomination and specifies the quantity
+     * @param scanner the Scanner object used to receive user input
+     */
     public void replenishCash(Scanner scanner){
         int[] denominations = this.cashInventory.getDenominations();
         int last_opt = denominations.length + 1;
@@ -345,6 +398,12 @@ public class VendingMachine {
         Main.pause(scanner);
     }
 
+    /**
+     * Displays the transaction summary menu.
+     * <p>
+     * The operator can view sales summaries and inventory levels since the last restocking.
+     * @param scanner the Scanner object used to receive user input
+     */
     public void displayTransactionSummary(Scanner scanner){
         String input = "";
         int choice = 0;
@@ -380,7 +439,13 @@ public class VendingMachine {
         } while(choice != 3);
 
     }
-
+    
+    /**
+     * Collects all money currently stored in the vending machine.
+     * <p>
+     * After collection, the machine's cash reserves are reset to zero,
+     * and the total amount collected is displayed.
+     */
     public void collectCash(){
         double extrct_amt = this.cashInventory.extractCash();
         System.out.println("Cash Collected Successfuly!");
